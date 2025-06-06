@@ -14,13 +14,10 @@ namespace Pimission.ViewModels
         {
             set
             {
-                collections.Clear();
-
                 foreach (var item in value)
                 {
                     collections.Add(item);
                 }
-
             }
         }
 

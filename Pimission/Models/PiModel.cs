@@ -10,7 +10,7 @@ namespace Pimission.Models
 {
     public class PiModel : INotifyPropertyChanged
     {
-        public int SampleSize { get; set; }
+        public long SampleSize { get; set; }
         public DateTime Time { get; set; }
 
         private double _value;
@@ -29,14 +29,14 @@ namespace Pimission.Models
 
 
 
-        public PiModel(int samplesize, double value)
+        public PiModel(long samplesize, double value)
         {
             this.SampleSize = samplesize;
             this.Time = DateTime.Now;
             this.Value = value;
         }
 
-        public PiModel(int samplesize)
+        public PiModel(long samplesize)
         {
             this.SampleSize = samplesize;
             this.Time = DateTime.Now;

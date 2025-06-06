@@ -8,7 +8,6 @@ namespace Pimission
 {
     class PIMission
     {
-        private readonly object _lockObj = new object();
         public readonly long SampleSize;
         public PIMission(long sampleSize)
         {
@@ -27,10 +26,7 @@ namespace Pimission
 
                 if (x * x + y * y <= 1.0)
                 {
-                    lock (_lockObj)
-                    {
-                        insideCircle++;
-                    }
+                    Interlocked.Increment(ref insideCircle);
                 }
 
             });

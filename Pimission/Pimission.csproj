@@ -8,4 +8,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="WakaTime" Version="8.1.11" />
+  </ItemGroup>
+
 </Project>

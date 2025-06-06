@@ -1,4 +1,7 @@
-﻿using Pimission.Models;
+﻿using Pimission.Contracts;
+using Pimission.Models;
+using Pimission.Presenters;
+using Pimission.Service;
 using Pimission.Utility;
 using Pimission.ViewModels;
 using System.Collections.ObjectModel;
@@ -22,36 +25,44 @@ namespace Pimission
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IPiMissionWindow
     {
         PiViewModel model = new PiViewModel();
-        List<int> sizeLists = new List<int>();
-
-
+        PimissionPresenter pimissionPresenter;
+        public Timer timer;
         public MainWindow()
         {
             InitializeComponent();
             dataGrid.ItemsSource = model.collections;
+            // 作業: 嘗試不要用到 dataGrid view的方式，手動把物件資料丟到view上
+
+            this.pimissionPresenter = new PimissionPresenter(this);
+            pimissionPresenter.StartMission();
+
+            timer = new Timer(IntervalCallback, null, 0, 1000);
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void AddMissionButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DelayCallback(async () =>
+            this.DebounceTime(() =>
             {
-                Random random = new Random(Guid.NewGuid().GetHashCode());
-
                 int sampleSize = int.Parse(sampleSizeText.Text);
-                if (!sizeLists.Contains(sampleSize))
-                {
-                    sizeLists.Add(sampleSize);
-                    PiModel piModel = new PiModel(sampleSize);
-                    model.Add(piModel);
-                    PIMission pIMission = new PIMission(sampleSize);
-                    double value = await pIMission.Calculate();
-                    piModel.Value = value;
-                }
+                pimissionPresenter.SendMissionRequest(sampleSize);
             }, 400);
 
+        }
+
+        private void IntervalCallback(object state)
+        {
+            pimissionPresenter.FetchMissionDatas();
+        }
+
+        public void RenderDatas(List<PiModel> piModels)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                model.datas = piModels;
+            });
         }
     }
 }

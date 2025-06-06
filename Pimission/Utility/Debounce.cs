@@ -26,7 +26,7 @@ namespace Pimission.Utility
                 timer = new Timer(Callback2, data, debounceTime, Timeout.Infinite);
             }
         }
-        public static void DelayCallback(this Window form, Action action, int debounceTime = 0)
+        public static void DebounceTime(this Window form, Action action, int debounceTime = 0)
         {
             if (debounceTime != 0 && timer != null)
             {
