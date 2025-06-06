@@ -27,14 +27,13 @@ namespace Pimission
     /// </summary>
     public partial class MainWindow : Window, IPiMissionWindow
     {
-        PiViewModel model = new PiViewModel();
+        public PiViewModel viewModel { get; set; } = new PiViewModel();
         PimissionPresenter pimissionPresenter;
         public Timer timer;
         public MainWindow()
         {
             InitializeComponent();
-            dataGrid.ItemsSource = model.collections;
-            // 作業: 嘗試不要用到 dataGrid view的方式，手動把物件資料丟到view上
+            DataContext = this;
 
             this.pimissionPresenter = new PimissionPresenter(this);
             pimissionPresenter.StartMission();
@@ -61,7 +60,7 @@ namespace Pimission
         {
             this.Dispatcher.Invoke(() =>
             {
-                model.datas = piModels;
+                viewModel.datas = piModels;
             });
         }
     }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Pimission.ViewModels
 {
-    class PiViewModel
+    public class PiViewModel
     {
         public List<PiModel> datas
         {
