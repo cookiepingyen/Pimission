@@ -6,33 +6,60 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Pimission.Presenters
 {
     internal class PimissionPresenter : IPiMissionPresenter
     {
         IPiMissionWindow piMissionWindow;
-        PimissionService pimissionService = new PimissionService();
+        IPIMissionService piMissionService;
+        CancellationTokenSource cts = new CancellationTokenSource();
 
-        public PimissionPresenter(IPiMissionWindow piMissionWindow)
+        public PimissionPresenter(IPiMissionWindow piMissionWindow, IPIMissionService piMissionService)
         {
             this.piMissionWindow = piMissionWindow;
+            this.piMissionService = piMissionService;
         }
 
         public void SendMissionRequest(long sampleSize)
         {
-            pimissionService.Request(sampleSize);
+            if (cts.IsCancellationRequested)
+            {
+                return;
+            }
+            piMissionService.Request(sampleSize);
         }
 
         public void FetchMissionDatas()
         {
-            List<PiModel> piModels = pimissionService.Response();
+            List<PiModel> piModels = piMissionService.Response();
             this.piMissionWindow.RenderDatas(piModels);
         }
 
         public void StartMission()
         {
-            pimissionService.Start();
+            cts = new CancellationTokenSource();
+            piMissionService.Start(cts.Token);
+        }
+
+        public void StopMission()
+        {
+            cts.Cancel();
+        }
+
+        public bool MissionSwitch()
+        {
+            if (!cts.IsCancellationRequested)
+            {
+                StopMission();
+                return false;
+            }
+            else
+            {
+                StartMission();
+                return true;
+            }
         }
     }
 }

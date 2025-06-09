@@ -1,4 +1,5 @@
-﻿using Pimission.Contracts;
+﻿using IOCServiceCollection;
+using Pimission.Contracts;
 using Pimission.Models;
 using Pimission.Presenters;
 using Pimission.Service;
@@ -28,14 +29,14 @@ namespace Pimission
     public partial class MainWindow : Window, IPiMissionWindow
     {
         public PiViewModel viewModel { get; set; } = new PiViewModel();
-        PimissionPresenter pimissionPresenter;
+        IPiMissionPresenter pimissionPresenter;
         public Timer timer;
-        public MainWindow()
+        public MainWindow(PresenterFactory presenterFactory)
         {
             InitializeComponent();
             DataContext = this;
 
-            this.pimissionPresenter = new PimissionPresenter(this);
+            pimissionPresenter = presenterFactory.Create<IPiMissionPresenter, IPiMissionWindow>(this);
             pimissionPresenter.StartMission();
 
             timer = new Timer(IntervalCallback, null, 0, 1000);
@@ -50,6 +51,13 @@ namespace Pimission
             }, 400);
 
         }
+
+        private void CancelMissionButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            button.Content = pimissionPresenter.MissionSwitch() ? "Cancel" : "Start";
+        }
+
 
         private void IntervalCallback(object state)
         {

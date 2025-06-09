@@ -17,5 +17,7 @@ namespace Pimission.Contracts
         void StartMission();
         void FetchMissionDatas();
         void SendMissionRequest(long sampleSize);
+        void StopMission();
+        bool MissionSwitch();
     }
 }

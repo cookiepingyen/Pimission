@@ -11,6 +11,7 @@
             <Label Content="Sample Size"></Label>
             <TextBox x:Name="sampleSizeText" Text="2000"></TextBox>
             <Button Content="Add" Click="AddMissionButton_Click"></Button>
+            <Button Content="Cancel" Click="CancelMissionButton_Click"></Button>
         </StackPanel>
         <StackPanel Orientation="Vertical">
             <ItemsControl ItemsSource="{Binding viewModel.collections}">

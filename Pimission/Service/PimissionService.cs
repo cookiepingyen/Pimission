@@ -14,20 +14,11 @@ namespace Pimission.Service
         ConcurrentQueue<long> sampleSizeQueue = new ConcurrentQueue<long>();
         ConcurrentBag<PiModel> cache = new ConcurrentBag<PiModel>();
 
-        //internal async Task<PiModel> Request(int sampleSize)
-        //{
-        //    if (keyValuePairs.ContainsKey(sampleSize))
-        //    {
-        //        return null;
-        //    }
-        //    PiModel piModel = new PiModel(sampleSize);
-        //    keyValuePairs.TryAdd(sampleSize, piModel);
-        //    PIMission pIMission = new PIMission(sampleSize);
-        //    double value = await pIMission.Calculate();
-        //    piModel.Value = value;
 
-        //    return piModel;
-        //}
+        public PimissionService()
+        {
+
+        }
 
         public void Request(long sampleSize)
         {
@@ -45,11 +36,11 @@ namespace Pimission.Service
             return piModels;
         }
 
-        public void Start()
+        public void Start(CancellationToken token)
         {
             Task.Run(async () =>
             {
-                while (true)
+                while (!token.IsCancellationRequested)
                 {
                     if (sampleSizeQueue.Count > 0 && sampleSizeQueue.TryDequeue(out long sampleSize))
                     {
@@ -61,11 +52,6 @@ namespace Pimission.Service
                     }
                 }
             });
-        }
-
-        public void Stop()
-        {
-            throw new NotImplementedException();
         }
     }
 }
