@@ -11,29 +11,20 @@ namespace Pimission.Service
     internal class PimissionService : IPIMissionService
     {
         ConcurrentDictionary<long, PiModel> keyValuePairs = new ConcurrentDictionary<long, PiModel>();
-        ConcurrentQueue<long> sampleSizeQueue = new ConcurrentQueue<long>();
-        ConcurrentBag<PiModel> cache = new ConcurrentBag<PiModel>();
-
+        ConcurrentQueue<PiModel> sampleSizeQueue = new ConcurrentQueue<PiModel>();
 
         public PimissionService()
         {
 
         }
 
-        public void Request(long sampleSize)
+        public void Request(PiModel piModel)
         {
-            if (!keyValuePairs.ContainsKey(sampleSize))
+            if (!keyValuePairs.ContainsKey(piModel.SampleSize))
             {
-                keyValuePairs.TryAdd(sampleSize, new PiModel(sampleSize));
-                sampleSizeQueue.Enqueue(sampleSize);
+                keyValuePairs.TryAdd(piModel.SampleSize, piModel);
+                sampleSizeQueue.Enqueue(piModel);
             }
-        }
-
-        public List<PiModel> Response()
-        {
-            List<PiModel> piModels = cache.ToList();
-            cache.Clear();
-            return piModels;
         }
 
         public void Start(CancellationToken token)
@@ -42,13 +33,12 @@ namespace Pimission.Service
             {
                 while (!token.IsCancellationRequested)
                 {
-                    if (sampleSizeQueue.Count > 0 && sampleSizeQueue.TryDequeue(out long sampleSize))
+                    if (sampleSizeQueue.Count > 0 && sampleSizeQueue.TryDequeue(out PiModel pimodel))
                     {
-                        PIMission pIMission = new PIMission(sampleSize);
+                        PIMission pIMission = new PIMission(pimodel.SampleSize);
                         double value = await pIMission.Calculate();
-                        var model = new PiModel(sampleSize, value);
-                        keyValuePairs[sampleSize] = model;
-                        cache.Add(model);
+                        pimodel.Value = value;
+                        keyValuePairs[pimodel.SampleSize] = pimodel;
                     }
                 }
             });

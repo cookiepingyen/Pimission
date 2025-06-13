@@ -22,19 +22,15 @@ namespace Pimission.Presenters
             this.piMissionService = piMissionService;
         }
 
-        public void SendMissionRequest(long sampleSize)
+        public PiModel SendMissionRequest(long sampleSize)
         {
             if (cts.IsCancellationRequested)
             {
-                return;
+                return null;
             }
-            piMissionService.Request(sampleSize);
-        }
-
-        public void FetchMissionDatas()
-        {
-            List<PiModel> piModels = piMissionService.Response();
-            this.piMissionWindow.RenderDatas(piModels);
+            PiModel piModel = new PiModel(sampleSize);
+            piMissionService.Request(piModel);
+            return piModel;
         }
 
         public void StartMission()

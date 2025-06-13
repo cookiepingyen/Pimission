@@ -10,7 +10,6 @@ namespace Pimission.Service
     internal interface IPIMissionService
     {
         void Start(CancellationToken cts);
-        void Request(long sampleSize);
-        List<PiModel> Response();
+        void Request(PiModel piModel);
     }
 }

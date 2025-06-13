@@ -9,14 +9,13 @@ namespace Pimission.Contracts
 {
     interface IPiMissionWindow
     {
-        void RenderDatas(List<PiModel> piModels);
+
     }
 
     public interface IPiMissionPresenter
     {
         void StartMission();
-        void FetchMissionDatas();
-        void SendMissionRequest(long sampleSize);
+        PiModel SendMissionRequest(long sampleSize);
         void StopMission();
         bool MissionSwitch();
     }

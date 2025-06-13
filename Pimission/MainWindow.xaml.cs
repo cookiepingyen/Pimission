@@ -30,7 +30,7 @@ namespace Pimission
     {
         public PiViewModel viewModel { get; set; } = new PiViewModel();
         IPiMissionPresenter pimissionPresenter;
-        public Timer timer;
+
         public MainWindow(PresenterFactory presenterFactory)
         {
             InitializeComponent();
@@ -38,8 +38,6 @@ namespace Pimission
 
             pimissionPresenter = presenterFactory.Create<IPiMissionPresenter, IPiMissionWindow>(this);
             pimissionPresenter.StartMission();
-
-            timer = new Timer(IntervalCallback, null, 0, 1000);
         }
 
         private void AddMissionButton_Click(object sender, RoutedEventArgs e)
@@ -47,7 +45,11 @@ namespace Pimission
             this.DebounceTime(() =>
             {
                 int sampleSize = int.Parse(sampleSizeText.Text);
-                pimissionPresenter.SendMissionRequest(sampleSize);
+                PiModel pimodel = pimissionPresenter.SendMissionRequest(sampleSize);
+                if (pimodel != null)
+                {
+                    viewModel.Add(pimodel);
+                }
             }, 400);
 
         }
@@ -56,20 +58,6 @@ namespace Pimission
         {
             Button button = (Button)sender;
             button.Content = pimissionPresenter.MissionSwitch() ? "Cancel" : "Start";
-        }
-
-
-        private void IntervalCallback(object state)
-        {
-            pimissionPresenter.FetchMissionDatas();
-        }
-
-        public void RenderDatas(List<PiModel> piModels)
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                viewModel.datas = piModels;
-            });
         }
     }
 }
