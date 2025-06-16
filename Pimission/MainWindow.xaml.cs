@@ -59,5 +59,12 @@ namespace Pimission
             Button button = (Button)sender;
             button.Content = pimissionPresenter.MissionSwitch() ? "Cancel" : "Start";
         }
+
+        private void PaustButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            CancellationTokenSource cancellationTokenSource = (CancellationTokenSource)button.Tag;
+            cancellationTokenSource.Cancel();
+        }
     }
 }

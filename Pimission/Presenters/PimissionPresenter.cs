@@ -29,7 +29,7 @@ namespace Pimission.Presenters
                 return null;
             }
             PiModel piModel = new PiModel(sampleSize);
-            piMissionService.Request(piModel);
+            piModel = piMissionService.Request(piModel);
             return piModel;
         }
 

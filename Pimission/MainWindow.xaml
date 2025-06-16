@@ -21,6 +21,8 @@
                             <Label Content="{Binding SampleSize}" />
                             <Label Content="{Binding Time}" />
                             <Label Content="{Binding Value}" />
+                            <Button x:Name="PauseBtn" Content="Pause" Tag="{Binding CancellationTokenSource}" Click="PaustButton_Click"></Button>
+                            <Label Content="{Binding State}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

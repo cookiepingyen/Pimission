@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Pimission.Enums;
+using Pimission.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,17 +10,21 @@ namespace Pimission
 {
     class PIMission
     {
-        public readonly long SampleSize;
-        public PIMission(long sampleSize)
+        public readonly PiModel piModel;
+        public PIMission(PiModel piModel)
         {
-            this.SampleSize = sampleSize;
+            this.piModel = piModel;
         }
 
         public async Task<double> Calculate()
         {
             long insideCircle = 0;
-            await Parallel.ForAsync(0, SampleSize, async (index, token) =>
+            await Parallel.ForAsync(0, piModel.SampleSize, piModel.CancellationTokenSource.Token, async (index, token) =>
             {
+                if (piModel.CancellationTokenSource.Token.IsCancellationRequested)
+                {
+                    return;
+                }
                 Random rand = new Random();
 
                 double x = rand.NextDouble();
@@ -30,7 +36,7 @@ namespace Pimission
                 }
 
             });
-            return 4.0 * insideCircle / SampleSize;
+            return 4.0 * insideCircle / piModel.SampleSize;
         }
 
     }

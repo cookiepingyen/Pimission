@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pimission.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -13,7 +14,23 @@ namespace Pimission.Models
         public long SampleSize { get; set; }
         public DateTime Time { get; set; }
 
+        private MissionState _state;
+        public MissionState State
+        {
+            get => _state;
+            set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private double _value;
+
+        public CancellationTokenSource CancellationTokenSource { get; set; }
         public double Value
         {
             get => _value;
@@ -34,12 +51,15 @@ namespace Pimission.Models
             this.SampleSize = samplesize;
             this.Time = DateTime.Now;
             this.Value = value;
+            CancellationTokenSource = new CancellationTokenSource();
         }
 
         public PiModel(long samplesize)
         {
             this.SampleSize = samplesize;
             this.Time = DateTime.Now;
+            CancellationTokenSource = new CancellationTokenSource();
+
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
